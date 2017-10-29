@@ -59,6 +59,18 @@ h1 {
 	display: block;
 }
 
+#editTodo {
+	display: none;
+}
+
+.editing #editTodo {
+	display: block;
+}
+
+.editing p {
+	display: none;
+}
+
 /*Check boxes */
 
 .todo #complete {
