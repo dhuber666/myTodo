@@ -60,7 +60,27 @@ $(document).ready(function() {
 		},
 		editTodo: function(event) {
 			//TODO: Implement this function next
-			console.log($(event.target).val());
+			var currentText = $(event.target).val();
+			var keyPressed = event.keyCode;
+			if (keyPressed === ESCAPE_KEY) {
+				$(event.target)
+					.closest('div')
+					.removeClass('editing');
+			}
+			if (keyPressed === ENTER_KEY) {
+				console.log(
+					$(event.target)
+						.parent()
+						.find('p')
+				);
+				$(event.target)
+					.parent()
+					.find('p')
+					.text(currentText);
+				$(event.target)
+					.closest('div')
+					.removeClass('editing');
+			}
 		},
 		deleteTodo: function(event) {
 			var clickedTodo = $(event.target);
