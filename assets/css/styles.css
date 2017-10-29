@@ -43,3 +43,31 @@ h1 {
 .show ul li {
 	margin-left: 5px;
 }
+
+.todo {
+	display: flex;
+	align-items: center;
+	margin-bottom: 5px;
+	position: relative;
+}
+.todo p,
+.todo i {
+	font-size: 0.9rem;
+}
+
+.todo:hover .delete {
+	display: block;
+}
+
+/*Check boxes */
+
+.todo #complete {
+	margin: 0 10px 0 5px;
+}
+
+.todo .delete {
+	position: absolute;
+	right: 10px;
+	display: none;
+	cursor: pointer;
+}

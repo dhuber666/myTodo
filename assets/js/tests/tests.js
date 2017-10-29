@@ -18,5 +18,10 @@ tests({
 		var todos = Controller.getTodos();
 		Controller.deleteTodo(0);
 		eq(todos.length, 2);
+	},
+	'Todos should be an object so we can add different props to it': function() {
+		var todo = Controller.getTodos()[0];
+		todo.name = 'dominik';
+		eq(todo.name, 'dominik');
 	}
 });
