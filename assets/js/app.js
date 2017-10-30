@@ -27,12 +27,20 @@ $(document).ready(function() {
 			document
 				.querySelector('.show')
 				.addEventListener('dblclick', this.editMode.bind(this));
+			// for editing todo
 			document
 				.querySelector('.show')
 				.addEventListener('keyup', this.editTodo.bind(this));
+			// for completing todo
+			document
+				.querySelector('.show')
+				.addEventListener('click', this.completeTodo.bind(this));
 		},
 		getTodos: function() {
 			return Model.todos;
+		},
+		getTodo: function(index) {
+			return Model.todos[index];
 		},
 		addTodo: function(event) {
 			var element = event.target;
@@ -50,16 +58,18 @@ $(document).ready(function() {
 			}
 		},
 		editMode: function(event) {
-			var textField = $(event.target)
-				.parent()
-				.find("input[type='text']");
-			var currentText = $(event.target).text();
-			var clickedTodo = $(event.target).closest('div');
-			clickedTodo.addClass('editing');
-			textField.val(currentText);
+			if ($(event.target).hasClass('todoText')) {
+				var textField = $(event.target)
+					.parent()
+					.find("input[type='text']");
+				var currentText = $(event.target).text();
+				var clickedTodo = $(event.target).closest('div');
+				clickedTodo.addClass('editing');
+				textField.val(currentText);
+				textField.focus();
+			}
 		},
 		editTodo: function(event) {
-			//TODO: Implement this function next
 			var currentText = $(event.target).val();
 			var keyPressed = event.keyCode;
 			if (keyPressed === ESCAPE_KEY) {
@@ -90,17 +100,38 @@ $(document).ready(function() {
 				View.render();
 			}
 		},
+		completeTodo: function(event) {
+			if ($(event.target).hasClass('complete')) {
+				var clickedTodo = $(event.target);
+				// fetch the paragraph and toggle class
+
+				var paragraph = clickedTodo
+					.parent()
+					.find('p')
+					.toggleClass('completed');
+				console.log(paragraph.hasClass('completed'));
+				var clicked = clickedTodo.prop('checked');
+				var indexOfTodo = this.getIndexOfElement(clickedTodo);
+				var todo = Controller.getTodo(indexOfTodo);
+				todo.completed = !todo.completed;
+				this.todoChange(indexOfTodo, todo);
+				View.render();
+			}
+		},
 		getIndexOfElement: function(element) {
 			var todoText = $(element)
 				.closest('div')
 				.text();
 			var index = -1;
 			Model.todos.forEach(function(todo, i) {
-				if (todo.title === element) {
+				if (todo.title === todoText) {
 					index = i;
 				}
 			});
 			return index;
+		},
+		todoChange: function(index, todo) {
+			Model.todos.splice(index, 1, todo);
 		},
 		saveTodo: function(todoText) {
 			var todo = {
@@ -122,15 +153,16 @@ $(document).ready(function() {
 		showTodos: function() {
 			var showTodos = document.querySelector('.todos'); // fetch the todos UL
 			showTodos.innerHTML = '';
-			Model.todos.forEach(function(todo) {
+			Controller.getTodos().forEach(function(todo) {
 				var currentTodo = document.createElement('div');
 				currentTodo.className = 'todo';
+				var paragraph = todo.completed
+					? '<p class="todoText completed">' + todo.title + '</p>'
+					: '<p class="todoText">' + todo.title + '</p>';
 
 				currentTodo.innerHTML =
-					"<input type='checkbox' id='complete'>" +
-					'<p>' +
-					todo.title +
-					'</p>' +
+					"<input type='checkbox' class='complete'>" +
+					paragraph +
 					'<input type="text" id="editTodo">' +
 					"<i class='fa fa-trash-o delete' aria-hidden='true'></i>";
 				showTodos.appendChild(currentTodo);
